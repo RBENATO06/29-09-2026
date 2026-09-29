@@ -1,0 +1,89 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' --- Interfaces dos Produtos (Abstrações) ---
+interface DocumentoFiscal {
+  + getDescricao(): String
+}
+
+interface Pagamento {
+  + getDescricao(): String
+}
+
+interface EtiquetaEnvio {
+  + getDescricao(): String
+}
+
+' --- Produtos Concretos: Brasil ---
+class DocumentoFiscalBrasil {
+  + getDescricao(): String
+}
+class PagamentoBrasil {
+  + getDescricao(): String
+}
+class EtiquetaEnvioBrasil {
+  + getDescricao(): String
+}
+
+DocumentoFiscal <|.. DocumentoFiscalBrasil
+Pagamento <|.. PagamentoBrasil
+EtiquetaEnvio <|.. EtiquetaEnvioBrasil
+
+' --- Produtos Concretos: Portugal ---
+class DocumentoFiscalPortugal {
+  + getDescricao(): String
+}
+class PagamentoPortugal {
+  + getDescricao(): String
+}
+class EtiquetaEnvioPortugal {
+  + getDescricao(): String
+}
+
+DocumentoFiscal <|.. DocumentoFiscalPortugal
+Pagamento <|.. PagamentoPortugal
+EtiquetaEnvio <|.. EtiquetaEnvioPortugal
+
+' --- Fábrica Abstrata ---
+interface CheckoutFactory {
+  + criarDocumentoFiscal(): DocumentoFiscal
+  + criarPagamento(): Pagamento
+  + criarEtiquetaEnvio(): EtiquetaEnvio
+}
+
+' --- Fábricas Concretas ---
+class CheckoutBrasilFactory {
+  + criarDocumentoFiscal(): DocumentoFiscal
+  + criarPagamento(): Pagamento
+  + criarEtiquetaEnvio(): EtiquetaEnvio
+}
+class CheckoutPortugalFactory {
+  + criarDocumentoFiscal(): DocumentoFiscal
+  + criarPagamento(): Pagamento
+  + criarEtiquetaEnvio(): EtiquetaEnvio
+}
+
+CheckoutFactory <|.. CheckoutBrasilFactory
+CheckoutFactory <|.. CheckoutPortugalFactory
+
+' Relações de dependência das fábricas com os produtos
+CheckoutBrasilFactory ..> DocumentoFiscalBrasil
+CheckoutBrasilFactory ..> PagamentoBrasil
+CheckoutBrasilFactory ..> EtiquetaEnvioBrasil
+
+CheckoutPortugalFactory ..> DocumentoFiscalPortugal
+CheckoutPortugalFactory ..> PagamentoPortugal
+CheckoutPortugalFactory ..> EtiquetaEnvioPortugal
+
+' --- Cliente ---
+class Checkout {
+  - factory: CheckoutFactory
+  + Checkout(factory: CheckoutFactory)
+  + finalizarPedido(): void
+}
+
+Checkout o--> CheckoutFactory
+Checkout ..> DocumentoFiscal
+Checkout ..> Pagamento
+Checkout ..> EtiquetaEnvio
+@enduml
